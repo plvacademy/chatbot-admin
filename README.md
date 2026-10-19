@@ -23,6 +23,7 @@ js/
   services/api.js       requests to the Apps Script (password, errors)
   services/data.js      load / edit / save actions (no DOM)
   bot/engine.js         the chatbot (also used by the website)
+  bot/site-bot.js       the module the website imports (data loading, registration, unanswered questions)
   bot/texts.js          the bot's sentences, Arabic / English
   bot/runtime.js        the engine built from the current draft
   components/           login, tabs, test chat, FAQ editor, unanswered questions,
@@ -32,6 +33,19 @@ assets/favicon.png
 
 No build step and no dependencies: plain HTML, CSS and ES modules.
 Every CSS / JS reference carries `?v=N`; raise it on all files together after a change so browsers reload them.
+
+## Used by the website
+
+The website loads `js/bot/site-bot.js` (with its `engine.js` and `texts.js`) and only draws the replies:
+
+```js
+const { createSiteBot } = await import('https://plvacademy.github.io/chatbot-admin/js/bot/site-bot.js?v=1');
+const bot = createSiteBot({ apiUrl, feedbackUrl, whatsappNumber, socials, links, submitRegistration });
+await bot.ready;
+const reply = await bot.reply(text, lang); // { lang, text, actions, chips, followUp? }
+```
+
+So a change to the bot here reaches the website without touching the website's code.
 
 ## Run locally
 

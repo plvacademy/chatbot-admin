@@ -269,7 +269,7 @@ const THRESHOLD = 0.75; // one whole keyword (≈1) or a strong FAQ question ove
  *  links    { register, coaches, gallery, feedback, whatsappNumber, socials:{facebook,instagram,tiktok,youtube} }
  *  tr       (lang, key, vars) => translated text
  */
-export function createEngine({ faq = [], areas = [], coaches = [], links = {}, botName = {}, tr }) {
+export function createEngine({ faq = [], areas = [], coaches = [], reviews = null, links = {}, botName = {}, tr }) {
   // {name} in any sentence = the bot's name in that language (falls back to the default "PLV assistant" name).
   const nameFor = (lang) => String((lang === 'ar' ? botName.ar : botName.en) || botName.en || botName.ar || '').trim(); // '' = no name yet
   const say = (lang, key, vars) => tr(lang, key, { name: nameFor(lang), ...vars });
@@ -295,6 +295,21 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
     for (const e of areaEntries) for (const p of e.phrases) {
       const s = phraseScore(msg, p) / p.weight; // 1 = every word of the name is there
       if (s >= 0.9 && s > bestScore) { best = e.a; bestScore = s; }
+    }
+    return best;
+  }
+
+  /* Coach names: "مين كابتن أحمد؟" -> that coach's short intro (intro / intro_ar from the Coaches tab). */
+  const coachEntries = coaches.map((c) => ({
+    c, phrases: [c.name, c.name_ar].filter((n) => String(n || '').trim()).map((n) => compilePhrase(n, 1)).filter(Boolean),
+  }));
+  function findCoach(msg) {
+    let best = null, bestScore = 0;
+    for (const e of coachEntries) for (const p of e.phrases) {
+      // every word of a one-word name, or at least two words of a longer one
+      const s = phraseScore(msg, p) / p.weight;
+      const need = p.words.length === 1 ? 1 : Math.min(1, 2 / p.words.length);
+      if (s >= need - 1e-9 && s > bestScore) { best = e.c; bestScore = s; }
     }
     return best;
   }
@@ -368,7 +383,16 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
           actions: [...link(lang, 'bot.btn.register', links.register), ...wa(lang)] }
         : { text: say(lang, 'bot.areasNone'), actions: wa(lang) };
     },
-    coaches: (lang) => {
+    coaches: (lang, q, ctx = {}) => {
+      if (ctx.coach) {
+        const name = pickField(ctx.coach, 'name', lang);
+        const role = pickField(ctx.coach, 'role', lang);
+        const intro = pickField(ctx.coach, 'intro', lang);
+        return {
+          text: say(lang, intro ? 'bot.coachOne' : 'bot.coachOneShort', { name, role: role ? ` — ${role}` : '', intro }),
+          actions: link(lang, 'bot.btn.coaches', links.coaches),
+        };
+      }
       const list = coaches.map((c) => {
         const name = pickField(c, 'name', lang);
         const role = pickField(c, 'role', lang);
@@ -390,7 +414,12 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
       return acts.length ? { text: say(lang, 'bot.social'), actions: acts } : answers.contact(lang);
     },
     gallery: (lang) => ({ text: say(lang, 'bot.gallery'), actions: link(lang, 'bot.btn.gallery', links.gallery) }),
-    reviews: (lang) => ({ text: say(lang, 'bot.reviews'), actions: link(lang, 'bot.btn.reviews', links.feedback) }),
+    reviews: (lang) => ({
+      text: reviews && reviews.count > 0
+        ? say(lang, 'bot.reviewsSummary', { count: reviews.count, average: reviews.average.toFixed(1) })
+        : say(lang, 'bot.reviews'),
+      actions: link(lang, 'bot.btn.reviews', links.feedback),
+    }),
     about: (lang) => ({ text: say(lang, 'bot.about'), chips: chips(lang, ['register', 'coaches', 'areas']) }),
   };
 
@@ -661,6 +690,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
       if (pure) best = pure;
     }
     const area = findArea(msgAll);
+    const coach = findCoach(msgAll);
 
     // The owner's FAQ answer beats a "ask our team" topic on the same subject.
     if (best && best.kind === 'topic' && ASK_TEAM.includes(best.id)) {
@@ -677,6 +707,11 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
       const r = regText(message, session, msgAll, best);
       if (r) return { ...r, debug: [] };
       // It was a question: answer it below, then remind where the form stopped.
+    }
+    // (After the registration step, so a player who shares a coach's name is still a name.)
+    // A coach's name with a coaches question, or on its own ("كابتن أحمد؟") -> that coach.
+    if (coach && (!best || best.score < THRESHOLD || (best.kind === 'topic' && ['coaches', 'about', 'who'].includes(best.id)))) {
+      best = { kind: 'topic', id: 'coaches', score: 1 };
     }
     // Only an area name: "طب وفي التجمع؟" right after a prices / private / register answer continues that topic;
     // otherwise it confirms the area ("مصر الجديدة؟", "انتو في التجمع").
@@ -707,7 +742,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
 
     const out = best.kind === 'faq'
       ? { intent: `faq:${faqEntries[best.i].row.id || best.i}`, ...faqAnswer(faqEntries[best.i], lang) }
-      : { intent: best.id, ...answers[best.id](lang, message, { area }) };
+      : { intent: best.id, ...answers[best.id](lang, message, { area, coach: best.id === 'coaches' ? coach : null }) };
     if (area) out.area = area.name || area.name_ar;
 
     // The SAME question asked again (not just another question on the same topic) -> the answer didn't help: offer a person.
@@ -732,7 +767,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], links = {}, b
       // "عايز اسجل" -> offer to register right here in the chat (keeping any area they named).
       out.chips = [{ intent: area ? `reg:startArea:${area.name}` : 'reg:start', label: say(lang, 'bot.reg.chatBtn') }, ...(out.chips || [])].slice(0, 4);
     }
-    out.rebuild = () => (best.kind === 'faq' ? null : answers[best.id](lang, message, { area }).text);
+    out.rebuild = () => (best.kind === 'faq' ? null : answers[best.id](lang, message, { area, coach: best.id === 'coaches' ? coach : null }).text);
     return { lang, ...out, debug };
   }
 
