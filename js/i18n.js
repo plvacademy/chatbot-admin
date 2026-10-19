@@ -1,0 +1,304 @@
+/**
+ * Panel language (Arabic / English). Separate from the language of the test chat, which follows the website.
+ *
+ * Static markup:  data-i18n="key" (text), data-i18n-placeholder, data-i18n-aria, data-i18n-title
+ * In code:        t('key', { var: value })
+ *
+ * This page is public: messages never name script properties, functions or sheet tabs.
+ */
+import { CONFIG } from './config.js?v=1';
+import { local } from './core/storage.js?v=1';
+import { emit } from './state.js?v=1';
+
+const DICT = {
+  ar: {
+    'title': 'PLV Chatbot Admin',
+    'top.sub': 'لوحة تحكم الشات بوت. التعديلات بتتحفظ في الشيت، والبوت على الموقع بيقرا منه.',
+    'top.uiLang': 'لغة اللوحة',
+    'top.chatLang': 'لغة شات التجربة:',
+    'top.debug': 'عرض النقاط (Debug)',
+    'top.reload': 'تحديث من الشيت',
+    'top.logout': 'خروج',
+
+    'login.title': 'دخول الأدمن',
+    'login.text': 'اكتب باسورد الأدمن عشان تدخل.',
+    'login.url': 'رابط السكريبت',
+    'login.password': 'الباسورد',
+    'login.remember': 'افتكرني لحد ما أقفل التاب',
+    'login.submit': 'دخول',
+
+    'save.bar': 'فيه تعديلات في الأسئلة لسه متحفظتش.',
+    'save.barMore': 'البوت على الموقع مش هيشوفها غير بعد الحفظ.',
+    'save.save': 'حفظ في الشيت',
+    'save.discard': 'تراجع عن التعديلات',
+    'save.saving': 'بيتحفظ…',
+    'save.done': 'اتحفظ {count} سؤال في الشيت. البوت على الموقع هيشوف التعديل خلال دقيقة تقريبًا.',
+    'save.invalid': 'السؤال {id}: {problem}. كمّله أو امسحه وبعدين احفظ.',
+    'save.retry': 'جرّب تاني',
+    'save.downloadMine': 'نزّل نسخة من تعديلاتي',
+    'save.confirmDiscard': 'ترجع للأسئلة اللي في الشيت وتمسح تعديلاتك؟',
+    'problem.noAnswer': 'مفيش إجابة',
+    'problem.noQuestion': 'مفيش سؤال ولا كلمات مفتاحية',
+    'problem.badId': 'رقم السؤال لازم يكون حروف إنجليزي وأرقام بس',
+    'problem.dupId': 'رقم السؤال متكرر',
+
+    'chat.aria': 'شات التجربة',
+    'chat.note': 'شات تجربة: بيستخدم تعديلاتك حتى قبل الحفظ، ومش بيبعت تسجيلات ولا أسئلة للشيت.',
+    'chat.error': 'حصل خطأ في الصفحة: ',
+    'chat.linkTitle': 'على الموقع بيفتح الصفحة دي',
+
+    'tabs.aria': 'أقسام اللوحة',
+    'tab.faq': 'الأسئلة (FAQ)',
+    'tab.misses': 'أسئلة ماتجاوبتش',
+    'tab.regs': 'تسجيلات تجريبية',
+    'tab.batch': 'اختبار جماعي',
+    'tab.settings': 'الإعدادات والملفات',
+
+    'faq.hint': 'كل كارت = سؤال وإجابته. اكتب السؤال زي ما الناس بتسأله، وفي الكلمات المفتاحية حط الكلمات اللي لو ظهرت يبقى ده السؤال، وافصل بينها بفاصلة (عربي وإنجليزي وفرانكو). جرّب في الشات على طول، ولما تخلص دوس "حفظ في الشيت".',
+    'faq.add': '+ سؤال جديد',
+    'faq.search': 'بحث في الأسئلة…',
+    'faq.empty': 'لسه مفيش أسئلة. دوس "+ سؤال جديد"، أو اعمل سؤال من تاب "أسئلة ماتجاوبتش".',
+    'faq.new': 'جديد',
+    'faq.published': 'منشور',
+    'faq.try': 'جرّبه',
+    'faq.delete': 'حذف',
+    'faq.confirmDelete': 'حذف السؤال {id}؟ (هيتمسح من الشيت لما تحفظ)',
+    'faq.qAr': 'السؤال بالعربي',
+    'faq.qEn': 'السؤال بالإنجليزي',
+    'faq.keywords': 'الكلمات المفتاحية (افصل بفاصلة)',
+    'faq.aAr': 'الإجابة بالعربي',
+    'faq.aEn': 'الإجابة بالإنجليزي',
+    'faq.link': 'رابط زرار (اختياري)',
+    'faq.labelAr': 'اسم الزرار بالعربي',
+    'faq.labelEn': 'اسم الزرار بالإنجليزي',
+
+    'misses.hint': 'الأسئلة اللي الزوار سألوها على الموقع والبوت مالقاش لها إجابة. دوس "اعمله سؤال" وهيتفتح كارت جديد فيه السؤال، اكتب الإجابة واحفظ، والسؤال هيتشال من هنا لوحده.',
+    'misses.refresh': 'تحديث',
+    'misses.clear': 'مسح السجل كله',
+    'misses.empty': 'مفيش أسئلة هنا. أي سؤال البوت ميعرفش يرد عليه على الموقع هيظهر هنا.',
+    'misses.colQ': 'السؤال',
+    'misses.colTime': 'الوقت',
+    'misses.toFaq': 'اعمله سؤال',
+    'misses.ignore': 'تجاهل',
+    'misses.topicNote': 'البوت حوّله للفريق ({topic}): اكتب إجابة في FAQ والبوت هيقولها بدل التحويل',
+    'misses.confirmClear': 'مسح كل الأسئلة اللي ماتجاوبتش من الشيت؟ مينفعش ترجع.',
+    'misses.cleared': 'السجل اتمسح',
+    'misses.saveFirst': 'احفظ تعديلاتك الأول، أو استخدم "تحديث من الشيت" فوق.',
+    'topic.level': 'المستوى', 'topic.ages': 'السن', 'topic.girls': 'البنات', 'topic.trial': 'أول تمرين',
+    'topic.gear': 'اللبس والأدوات', 'topic.payment': 'الدفع', 'topic.st_generic': 'كلام عام',
+
+    'regs.note': 'التسجيلات اللي بتتعمل من شات التجربة هنا. محدش منهم بيتبعت للشيت، وبيتمسحوا لما تقفل الصفحة. التسجيلات الحقيقية من الموقع بتروح لشيت التسجيل زي الفورم.',
+    'regs.simFail': 'جرّب كأن الإرسال فشل',
+    'regs.empty': 'لسه مفيش. جرّب تسجل من شات التجربة.',
+    'regs.col.time': 'الوقت', 'regs.col.area': 'المنطقة', 'regs.col.name': 'الاسم',
+    'regs.col.mobile': 'الموبايل', 'regs.col.age': 'السن', 'regs.col.position': 'المركز',
+    'pos.Setter': 'المُعِدّ', 'pos.Outside Hitter': 'المهاجم الخارجي', 'pos.Opposite': 'المهاجم المعاكس',
+    'pos.Middle Blocker': 'حائط الصد الأوسط', 'pos.Libero': 'الليبرو', 'pos.Not Sure Yet': 'لسه مش متأكد',
+
+    'batch.hint': 'حط أسئلة كتير (كل سؤال في سطر) وشوف البوت بيفهم كل واحد على إنه إيه. مفيد بعد ما تضيف أو تعدل أسئلة، عشان تتأكد إن مفيش حاجة باظت.',
+    'batch.aria': 'الأسئلة',
+    'batch.run': 'شغّل الاختبار',
+    'batch.sum': '{ok} من {total} اتفهموا',
+    'batch.colQ': 'السؤال', 'batch.colIntent': 'فهمه على إنه', 'batch.colScores': 'أعلى نقاط',
+    'batch.miss': 'مش فاهم',
+    'batch.needsAnswer': 'محتاج إجابة منك ({intent})',
+
+    'set.nameTitle': 'اسم البوت',
+    'set.nameHint': 'الاسم اللي البوت بيقوله في الترحيب ولما حد يسأله "انت مين؟". الحفظ هنا منفصل عن حفظ الأسئلة.',
+    'set.nameAr': 'الاسم بالعربي',
+    'set.nameEn': 'الاسم بالإنجليزي',
+    'set.saveName': 'حفظ الاسم',
+    'set.saved': 'الاسم اتحفظ',
+    'set.dataTitle': 'المناطق والمدربين',
+    'set.dataNote': 'البوت بياخد المناطق والمدربين من نفس بيانات الموقع. لو عايز تغيّرهم، عدّلهم في الشيت ودوس "تحديث من الشيت".',
+    'set.areas': 'المناطق',
+    'set.coaches': 'المدربين',
+    'set.noAreas': 'مفيش مناطق منشورة',
+    'set.noCoaches': 'مفيش مدربين منشورين',
+    'set.filesTitle': 'ملفات',
+    'set.filesHint': 'ملف CSV أعمدته نفس أعمدة الأسئلة في الشيت. ممكن تنزّل نسخة احتياطي، أو ترفع أسئلة كتير مرة واحدة (بتتضاف للتعديلات، وبعدها دوس "حفظ في الشيت").',
+    'set.exportCsv': 'تنزيل الأسئلة (CSV)',
+    'set.importCsv': 'رفع أسئلة (CSV)',
+    'set.importLab': 'رفع نسخة من شاشة التجربة (JSON)',
+    'files.imported': 'اتضاف {added} واتحدّث {updated}. دوس "حفظ في الشيت".',
+    'files.badJson': 'الملف ده مش نسخة من شاشة التجربة.',
+    'files.badCsv': 'الملف لازم يكون CSV وأول صف فيه أسماء الأعمدة (question_ar, keywords, answer_ar …).',
+
+    'auth.confirmLogout': 'فيه تعديلات متحفظتش وهتضيع. تخرج برضو؟',
+    'auth.confirmReload': 'التحديث هيمسح تعديلاتك اللي متحفظتش. تكمل؟',
+    'debug.on': 'النقاط ظاهرة',
+    'debug.off': 'النقاط مخفية',
+    'noscript': 'لوحة التحكم محتاجة JavaScript يكون شغال.',
+
+    'err.unauthorized': 'الباسورد غلط.',
+    'err.locked': 'اتكتب باسورد غلط كذا مرة. الدخول مقفول ربع ساعة، استنى وجرّب تاني.',
+    'err.not_configured': 'لوحة التحكم لسه مش متفعلة على السكريبت.',
+    'err.conflict': 'الأسئلة اتعدلت من مكان تاني (من الشيت نفسه أو من جهاز تاني) بعد ما فتحت الصفحة. نزّل نسخة من تعديلاتك، وبعدين اعمل تحديث من الشيت.',
+    'err.invalid_faq': 'فيه سؤال مش مكتمل',
+    'err.invalid_settings': 'الاسم لازم يكون حروف وأرقام بس.',
+    'err.setup_error': 'بيانات الشات بوت لسه مش متجهزة على السكريبت.',
+    'err.busy': 'السكريبت مشغول. جرّب تاني بعد ثواني.',
+    'err.rate_limited': 'طلبات كتير. جرّب تاني بعد شوية.',
+    'err.not_set': 'رابط السكريبت مش مظبوط.',
+    'err.network': 'مقدرتش أوصل للسكريبت. اتأكد من النت وجرّب تاني.',
+  },
+  en: {
+    'title': 'PLV Chatbot Admin',
+    'top.sub': 'Chatbot control panel. Changes are saved to the sheet that the website bot reads.',
+    'top.uiLang': 'Panel language',
+    'top.chatLang': 'Test chat language:',
+    'top.debug': 'Show scores (debug)',
+    'top.reload': 'Reload from sheet',
+    'top.logout': 'Log out',
+
+    'login.title': 'Admin login',
+    'login.text': 'Enter the admin password to continue.',
+    'login.url': 'Server address',
+    'login.password': 'Password',
+    'login.remember': 'Remember me until I close this tab',
+    'login.submit': 'Log in',
+
+    'save.bar': 'You have unsaved changes to the questions.',
+    'save.barMore': 'The website bot won’t see them until you save.',
+    'save.save': 'Save to sheet',
+    'save.discard': 'Discard changes',
+    'save.saving': 'Saving…',
+    'save.done': 'Saved {count} questions to the sheet. The website bot will pick up the change within about a minute.',
+    'save.invalid': 'Question {id}: {problem}. Complete it or delete it, then save.',
+    'save.retry': 'Try again',
+    'save.downloadMine': 'Download my changes',
+    'save.confirmDiscard': 'Go back to the questions in the sheet and discard your changes?',
+    'problem.noAnswer': 'no answer',
+    'problem.noQuestion': 'no question or keywords',
+    'problem.badId': 'the ID may only contain English letters and numbers',
+    'problem.dupId': 'duplicate ID',
+
+    'chat.aria': 'Test chat',
+    'chat.note': 'Test chat: uses your changes even before saving, and never sends registrations or questions to the sheet.',
+    'chat.error': 'Page error: ',
+    'chat.linkTitle': 'Opens this page on the website',
+
+    'tabs.aria': 'Panel sections',
+    'tab.faq': 'Questions (FAQ)',
+    'tab.misses': 'Unanswered',
+    'tab.regs': 'Test registrations',
+    'tab.batch': 'Batch test',
+    'tab.settings': 'Settings & files',
+
+    'faq.hint': 'Each card is one question and its answer. Write the question the way people ask it, and in Keywords list the words that mean this question, separated by commas (Arabic, English and Franco). Try it in the chat right away, then press "Save to sheet".',
+    'faq.add': '+ New question',
+    'faq.search': 'Search questions…',
+    'faq.empty': 'No questions yet. Press "+ New question", or turn one from the "Unanswered" tab into a question.',
+    'faq.new': 'new',
+    'faq.published': 'Published',
+    'faq.try': 'Try it',
+    'faq.delete': 'Delete',
+    'faq.confirmDelete': 'Delete question {id}? (It is removed from the sheet when you save.)',
+    'faq.qAr': 'Question (Arabic)',
+    'faq.qEn': 'Question (English)',
+    'faq.keywords': 'Keywords (comma-separated)',
+    'faq.aAr': 'Answer (Arabic)',
+    'faq.aEn': 'Answer (English)',
+    'faq.link': 'Button link (optional)',
+    'faq.labelAr': 'Button label (Arabic)',
+    'faq.labelEn': 'Button label (English)',
+
+    'misses.hint': 'Questions visitors asked on the website that the bot could not answer. Press "Make it a question" to open a new card with it, write the answer and save: it then leaves this list by itself.',
+    'misses.refresh': 'Refresh',
+    'misses.clear': 'Clear the whole log',
+    'misses.empty': 'Nothing here. Any question the bot cannot answer on the website will show up here.',
+    'misses.colQ': 'Question',
+    'misses.colTime': 'Time',
+    'misses.toFaq': 'Make it a question',
+    'misses.ignore': 'Ignore',
+    'misses.topicNote': 'The bot forwarded it to the team ({topic}): write an FAQ answer and the bot will use it instead',
+    'misses.confirmClear': 'Delete every unanswered question from the sheet? This cannot be undone.',
+    'misses.cleared': 'Log cleared',
+    'misses.saveFirst': 'Save your changes first, or use "Reload from sheet" above.',
+    'topic.level': 'level', 'topic.ages': 'age', 'topic.girls': 'girls', 'topic.trial': 'first session',
+    'topic.gear': 'clothes & gear', 'topic.payment': 'payment', 'topic.st_generic': 'small talk',
+
+    'regs.note': 'Registrations made in the test chat show up here. None of them is sent to the sheet, and they disappear when you close the page. Real registrations from the website go to the registration sheet, like the form.',
+    'regs.simFail': 'Simulate a failed send',
+    'regs.empty': 'None yet. Try registering in the test chat.',
+    'regs.col.time': 'Time', 'regs.col.area': 'Area', 'regs.col.name': 'Name',
+    'regs.col.mobile': 'Mobile', 'regs.col.age': 'Age', 'regs.col.position': 'Position',
+    'pos.Setter': 'Setter', 'pos.Outside Hitter': 'Outside Hitter', 'pos.Opposite': 'Opposite',
+    'pos.Middle Blocker': 'Middle Blocker', 'pos.Libero': 'Libero', 'pos.Not Sure Yet': 'Not sure yet',
+
+    'batch.hint': 'Paste many questions (one per line) and see what the bot understands each one as. Useful after adding or editing questions, to check nothing broke.',
+    'batch.aria': 'Questions',
+    'batch.run': 'Run the test',
+    'batch.sum': '{ok} of {total} understood',
+    'batch.colQ': 'Question', 'batch.colIntent': 'Understood as', 'batch.colScores': 'Top scores',
+    'batch.miss': 'not understood',
+    'batch.needsAnswer': 'needs your answer ({intent})',
+
+    'set.nameTitle': 'Bot name',
+    'set.nameHint': 'The name the bot uses in its welcome and when someone asks "who are you?". Saved separately from the questions.',
+    'set.nameAr': 'Name (Arabic)',
+    'set.nameEn': 'Name (English)',
+    'set.saveName': 'Save name',
+    'set.saved': 'Name saved',
+    'set.dataTitle': 'Areas & coaches',
+    'set.dataNote': 'The bot takes the areas and coaches from the same data as the website. To change them, edit the sheet and press "Reload from sheet".',
+    'set.areas': 'Areas',
+    'set.coaches': 'Coaches',
+    'set.noAreas': 'No published areas',
+    'set.noCoaches': 'No published coaches',
+    'set.filesTitle': 'Files',
+    'set.filesHint': 'A CSV file with the same columns as the questions in the sheet. Download a backup, or upload many questions at once (they are added to your changes; then press "Save to sheet").',
+    'set.exportCsv': 'Download questions (CSV)',
+    'set.importCsv': 'Upload questions (CSV)',
+    'set.importLab': 'Upload a test-screen backup (JSON)',
+    'files.imported': '{added} added, {updated} updated. Press "Save to sheet".',
+    'files.badJson': 'This file is not a backup from the test screen.',
+    'files.badCsv': 'The file must be a CSV whose first row has the column names (question_ar, keywords, answer_ar …).',
+
+    'auth.confirmLogout': 'You have unsaved changes that will be lost. Log out anyway?',
+    'auth.confirmReload': 'Reloading discards your unsaved changes. Continue?',
+    'debug.on': 'Scores shown',
+    'debug.off': 'Scores hidden',
+    'noscript': 'The admin panel needs JavaScript enabled.',
+
+    'err.unauthorized': 'Wrong password.',
+    'err.locked': 'Too many wrong passwords. Login is locked for 15 minutes; please wait and try again.',
+    'err.not_configured': 'The admin panel is not enabled on the server yet.',
+    'err.conflict': 'The questions were changed somewhere else (in the sheet itself or on another device) after you opened this page. Download your changes, then reload from the sheet.',
+    'err.invalid_faq': 'A question is incomplete',
+    'err.invalid_settings': 'The name may only contain letters and numbers.',
+    'err.setup_error': 'The chatbot data is not set up on the server yet.',
+    'err.busy': 'The server is busy. Try again in a few seconds.',
+    'err.rate_limited': 'Too many requests. Try again later.',
+    'err.not_set': 'The server address is not valid.',
+    'err.network': 'Could not reach the server. Check your connection and try again.',
+  },
+};
+
+let lang = local.get(CONFIG.STORAGE.uiLang) === 'en' ? 'en' : 'ar';
+
+export const getUiLang = () => lang;
+export const locale = () => (lang === 'ar' ? 'ar-EG' : 'en-GB');
+
+export function t(key, vars = {}) {
+  const text = DICT[lang][key] ?? DICT.ar[key] ?? key;
+  return text.replace(/\{(\w+)\}/g, (_, name) => (name in vars ? String(vars[name]) : `{${name}}`));
+}
+
+/** Translates every element marked with data-i18n* and sets the page language and direction. */
+export function applyStatic(root = document) {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.title = t('title');
+  root.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  root.querySelectorAll('[data-i18n-placeholder]').forEach((el) => el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)));
+  root.querySelectorAll('[data-i18n-aria]').forEach((el) => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+  root.querySelectorAll('[data-ui-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.uiLang === lang)));
+}
+
+export function setUiLang(value) {
+  lang = value === 'en' ? 'en' : 'ar';
+  local.set(CONFIG.STORAGE.uiLang, lang);
+  applyStatic();
+  emit('ui-lang', lang);
+}

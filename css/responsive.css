@@ -1,0 +1,18 @@
+/* ==========================================================================
+   PLV Chatbot Admin — breakpoints.
+   ========================================================================== */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .chat { position: static; height: 70vh; }
+}
+
+@media (max-width: 560px) {
+  .grid { grid-template-columns: 1fr; }
+  .top { padding: .7rem 12px; }
+  .layout { padding: 12px; gap: 12px; }
+  .panel { padding: .8rem; }
+}
+
+@media print {
+  .top__tools, .savebar, .chat { display: none; }
+}
