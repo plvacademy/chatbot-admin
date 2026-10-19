@@ -6,12 +6,14 @@
  *   misses       the unanswered-questions log changed
  *   settings     the bot name changed
  *   regs         a test registration was added
+ *   log          the conversation log was loaded / cleared
+ *   tab          a tab was selected (detail = its name)
  *   dirty        unsaved FAQ changes appeared / were saved or discarded
  *   lang         the site language of the test chat changed
  *   auth:expired the password stopped working (wrong / locked): back to the login screen
  */
-import { CONFIG } from './config.js?v=1';
-import { local } from './core/storage.js?v=1';
+import { CONFIG } from './config.js?v=2';
+import { local } from './core/storage.js?v=2';
 
 export const state = {
   // As last read from / saved to the sheet.
@@ -25,6 +27,9 @@ export const state = {
   hiddenMisses: new Set(),
   // Test-chat registrations (memory only, never sent).
   regs: [],
+  // Conversation log (loaded when its tab is opened). null = not loaded yet.
+  log: null,
+  logTotal: 0,
   siteLang: local.get(CONFIG.STORAGE.siteLang) === 'en' ? 'en' : 'ar',
 };
 

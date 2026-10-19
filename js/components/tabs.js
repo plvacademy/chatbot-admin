@@ -1,6 +1,8 @@
 /**
  * Accessible tabs (WAI-ARIA pattern): click, or arrow keys / Home / End when a tab has focus.
  */
+import { emit } from '../state.js?v=2';
+
 const tabs = () => [...document.querySelectorAll('[role="tab"]')];
 
 export function selectTab(name, { focus = false } = {}) {
@@ -12,6 +14,7 @@ export function selectTab(name, { focus = false } = {}) {
     const panel = document.getElementById(tab.getAttribute('aria-controls'));
     if (panel) panel.hidden = !active;
   }
+  emit('tab', name);
 }
 
 export function initTabs() {

@@ -6,9 +6,9 @@
  *
  * This page is public: messages never name script properties, functions or sheet tabs.
  */
-import { CONFIG } from './config.js?v=1';
-import { local } from './core/storage.js?v=1';
-import { emit } from './state.js?v=1';
+import { CONFIG } from './config.js?v=2';
+import { local } from './core/storage.js?v=2';
+import { emit } from './state.js?v=2';
 
 const DICT = {
   ar: {
@@ -51,6 +51,26 @@ const DICT = {
     'tab.faq': 'الأسئلة (FAQ)',
     'tab.misses': 'أسئلة ماتجاوبتش',
     'tab.regs': 'تسجيلات تجريبية',
+    'tab.log': 'المحادثات',
+    'log.hint': 'كل المحادثات اللي حصلت مع البوت على الموقع، كل محادثة لوحدها. الأحدث فوق. دوس على أي محادثة عشان تشوف رسايلها بالترتيب. أرقام التليفون وبيانات التسجيل مش بتتسجل هنا.',
+    'log.refresh': 'تحديث',
+    'log.onlyMissed': 'اللي فيها أسئلة ماتجاوبتش بس',
+    'log.search': 'بحث في المحادثات…',
+    'log.clear': 'مسح السجل كله',
+    'log.confirmClear': 'مسح كل المحادثات من الشيت؟ مينفعش ترجع.',
+    'log.cleared': 'السجل اتمسح',
+    'log.loading': 'بيحمّل المحادثات…',
+    'log.empty': 'لسه مفيش محادثات. أول ما حد يكلم البوت على الموقع هتظهر هنا.',
+    'log.noMatch': 'مفيش محادثات بالبحث ده.',
+    'log.summary': '{sessions} محادثة، {turns} رسالة، منهم {missed} ماتجاوبتش',
+    'log.partial': ' (آخر {shown} رسالة من {total})',
+    'log.turns': '{n} رسالة',
+    'log.missed': '{n} ماتجاوبتش',
+    'log.visitor': 'الزائر',
+    'log.bot': 'البوت',
+    'log.notAnswered': 'ماتجاوبش',
+    'log.more': 'اعرض محادثات أكتر',
+    'log.lang.ar': 'عربي', 'log.lang.en': 'إنجليزي',
     'tab.batch': 'اختبار جماعي',
     'tab.settings': 'الإعدادات والملفات',
 
@@ -182,6 +202,26 @@ const DICT = {
     'tab.faq': 'Questions (FAQ)',
     'tab.misses': 'Unanswered',
     'tab.regs': 'Test registrations',
+    'tab.log': 'Conversations',
+    'log.hint': 'Every conversation with the bot on the website, one by one, newest first. Open one to read its messages in order. Phone numbers and registration details are never recorded here.',
+    'log.refresh': 'Refresh',
+    'log.onlyMissed': 'Only with unanswered questions',
+    'log.search': 'Search conversations…',
+    'log.clear': 'Clear the whole log',
+    'log.confirmClear': 'Delete every conversation from the sheet? This cannot be undone.',
+    'log.cleared': 'Log cleared',
+    'log.loading': 'Loading conversations…',
+    'log.empty': 'No conversations yet. They appear here as soon as someone talks to the bot on the website.',
+    'log.noMatch': 'No conversation matches.',
+    'log.summary': '{sessions} conversations, {turns} messages, {missed} unanswered',
+    'log.partial': ' (latest {shown} of {total} messages)',
+    'log.turns': '{n} messages',
+    'log.missed': '{n} unanswered',
+    'log.visitor': 'Visitor',
+    'log.bot': 'Bot',
+    'log.notAnswered': 'not answered',
+    'log.more': 'Show more conversations',
+    'log.lang.ar': 'Arabic', 'log.lang.en': 'English',
     'tab.batch': 'Batch test',
     'tab.settings': 'Settings & files',
 

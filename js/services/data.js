@@ -2,9 +2,9 @@
  * Data actions: load from the sheet, edit the draft, save. They update `state` and emit events;
  * they never touch the DOM (components do).
  */
-import { CONFIG } from '../config.js?v=1';
-import { call } from './api.js?v=1';
-import { state, emit, setDirty, clone } from '../state.js?v=1';
+import { CONFIG } from '../config.js?v=2';
+import { call } from './api.js?v=2';
+import { state, emit, setDirty, clone } from '../state.js?v=2';
 
 const ID_RE = /^[A-Za-z0-9_-]{1,20}$/;
 const hasText = (v) => String(v ?? '').trim() !== '';
@@ -140,6 +140,21 @@ export async function clearMisses() {
   state.server.misses = [];
   state.fromMiss = new Set();
   emit('misses');
+}
+
+/* ---------------- conversation log ---------------- */
+export async function loadLog() {
+  const res = await call('loadLog', { limit: 3000 });
+  state.log = res.log || [];
+  state.logTotal = res.total || 0;
+  emit('log');
+}
+
+export async function clearLog() {
+  await call('clearLog');
+  state.log = [];
+  state.logTotal = 0;
+  emit('log');
 }
 
 /* ---------------- settings ---------------- */

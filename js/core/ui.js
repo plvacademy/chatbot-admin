@@ -1,7 +1,7 @@
 /**
  * Feedback to the admin: a short toast, and a banner for results that need attention (with an optional button).
  */
-import { $, h } from './dom.js?v=1';
+import { $, h } from './dom.js?v=2';
 
 let toastTimer;
 export function toast(message) {
@@ -18,10 +18,9 @@ export function banner(kind, text, action) {
   if (!kind) { wrap.hidden = true; return; }
   const box = wrap.firstElementChild;
   box.className = `banner__box ${kind === 'error' ? 'is-error' : 'is-ok'}`;
-  box.replaceChildren(
-    h('span', { text }),
-    action ? h('button', { type: 'button', class: 'btn btn--ghost btn--sm', text: action.label, onclick: action.onClick }) : null,
-  );
+  const parts = [h('span', { text })];
+  if (action) parts.push(h('button', { type: 'button', class: 'btn btn--ghost btn--sm', text: action.label, onclick: action.onClick }));
+  box.replaceChildren(...parts);
   wrap.hidden = false;
 }
 

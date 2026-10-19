@@ -18,14 +18,41 @@
  *   followUp?: Promise<Reply>,                      // after a confirmed registration: the result
  * }
  *
- * The module sends chat registrations through the website's own submitRegistration(data, meta), and reports
- * questions it could not answer to the chatbot Apps Script. Nothing here needs a secret.
+ * The module sends chat registrations through the website's own submitRegistration(data, meta), and logs every
+ * turn of the conversation to the chatbot Apps Script (tab ChatLog; unanswered questions also go to ChatMisses).
+ * One conversation = one id, kept for the browser tab (sessionStorage) across pages, renewed after 30 minutes
+ * without messages or by reset(). Phone numbers and the name / phone typed during registration are never logged.
+ * Nothing here needs a secret.
  */
-import { createEngine } from './engine.js?v=1';
-import { tr } from './texts.js?v=1';
+import { createEngine } from './engine.js?v=2';
+import { tr } from './texts.js?v=2';
 
 const TIMEOUT_MS = 10000;
 const START_CHIPS = ['areas', 'contact', 'about'];
+const SESSION_KEY = 'plv.chat.session';
+const SESSION_IDLE_MS = 30 * 60 * 1000;
+const PRIVATE_STEPS = ['name', 'mobile', 'age']; // registration answers that are personal data
+const PLACEHOLDER = { ar: '(بيانات تسجيل)', en: '(registration details)' };
+
+const newId = () => (globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
+
+/** The conversation id: the same for the whole visit in this tab (also across pages), new after 30 idle minutes. */
+let memorySession = null; // used when sessionStorage is not available
+function conversationId(fresh = false) {
+  let s = null;
+  try { s = JSON.parse(globalThis.sessionStorage?.getItem(SESSION_KEY) || 'null'); } catch { s = memorySession; }
+  if (!s) s = memorySession;
+  const now = Date.now();
+  if (fresh || !s || !s.id || now - s.at > SESSION_IDLE_MS) s = { id: newId() };
+  s.at = now;
+  memorySession = s;
+  try { globalThis.sessionStorage?.setItem(SESSION_KEY, JSON.stringify(s)); } catch { /* memory only */ }
+  return s.id;
+}
+
+const currentPage = () => {
+  try { return (globalThis.location?.pathname || '').split('/').pop() || 'index.html'; } catch { return ''; }
+};
 
 async function getJson(url, timeoutMs = TIMEOUT_MS) {
   const controller = new AbortController();
@@ -119,26 +146,39 @@ export function createSiteBot(options = {}) {
       );
       const done = engine.submitResult(true, lang);
       session.lastIntent = done.intent;
+      logTurn('', done);
       return toReply(done);
     } catch (err) {
       console.warn('[PLV:chatbot] registration failed:', err?.kind || '', err?.code || err?.message || err);
-      return toReply(engine.submitResult(false, lang, err?.code));
+      const failed = engine.submitResult(false, lang, err?.code);
+      logTurn('', failed);
+      return toReply(failed);
     }
   }
 
-  /** Unanswered question -> the admin's "Unanswered" list. Fire and forget; a failure is only logged. */
-  function logMiss(text, r) {
+  /**
+   * One turn -> the conversation log (and, when unanswered, the admin's "Unanswered" list).
+   * Fire and forget: a failure is only reported in the console.
+   */
+  function logTurn(question, r, hide = []) {
     if (!isHttps(apiUrl)) return;
-    const q = scrub(text);
-    if (!q.trim()) return;
+    let answer = String(r.text || '');
+    for (const value of hide) if (value) answer = answer.split(String(value)).join('•••');
     fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // simple request: no CORS preflight
-      body: JSON.stringify({ action: 'miss', q, topic: r.intent === 'fallback' ? '' : r.intent, lang: r.lang, website: '' }),
+      body: JSON.stringify({
+        action: 'log', session: conversationId(), page: currentPage(), lang: r.lang,
+        q: scrub(question), a: scrub(answer).slice(0, 500), intent: String(r.intent || '').slice(0, 60),
+        answered: !r.miss, miss: !!r.miss, website: '',
+      }),
       credentials: 'omit',
       keepalive: true,
-    }).catch((err) => console.warn('[PLV:chatbot] could not log question:', err?.message || err));
+    }).catch((err) => console.warn('[PLV:chatbot] could not log the conversation:', err?.message || err));
   }
+
+  /** Personal registration data typed so far (masked in the logged answers). */
+  const regSecrets = () => [session.reg?.data?.name, session.reg?.data?.mobile].filter(Boolean);
 
   function botName(lang = 'ar') {
     const s = data.settings || {};
@@ -161,19 +201,29 @@ export function createSiteBot(options = {}) {
 
     async reply(text, lang = 'ar') {
       const message = String(text || '').slice(0, 500);
+      const privateStep = !!session.reg && PRIVATE_STEPS.includes(session.reg.step);
+      const regLang = session.reg?.lang || lang;
+      const before = regSecrets();
       const r = engine.reply(message, lang, session);
       session.lastIntent = r.intent;
-      if (r.miss) logMiss(message, r);
+      logTurn(privateStep ? PLACEHOLDER[regLang] || PLACEHOLDER.ar : message, r, [...before, ...regSecrets(), privateStep ? message : '']);
       return toReply(r);
     },
 
     async choose(chip, lang = 'ar') {
       const id = typeof chip === 'string' ? chip : chip?.id;
+      const label = typeof chip === 'string' ? chip : (chip?.label || chip?.id || '');
+      const before = regSecrets();
       const r = engine.replyIntent(String(id || 'menu'), lang, session);
       session.lastIntent = r.intent;
+      logTurn(label, r, [...before, ...regSecrets()]);
       return toReply(r);
     },
 
-    reset() { session = {}; },
+    /** New conversation: clears the bot's memory and starts a new conversation id. */
+    reset() { session = {}; conversationId(true); },
+
+    /** The current conversation id (for support / debugging). */
+    conversationId: () => conversationId(),
   };
 }

@@ -11,22 +11,23 @@
  *   bot/runtime.js       the engine built from the current draft
  *   components/*.js      the parts of the page
  */
-import { $ } from './core/dom.js?v=1';
-import { toast } from './core/ui.js?v=1';
-import { CONFIG } from './config.js?v=1';
-import { local } from './core/storage.js?v=1';
-import { state, emit } from './state.js?v=1';
-import { initTabs } from './components/tabs.js?v=1';
-import { initChat } from './components/chat.js?v=1';
-import { initFaqEditor } from './components/faqEditor.js?v=1';
-import { initMisses } from './components/misses.js?v=1';
-import { initRegistrations } from './components/registrations.js?v=1';
-import { initBatch } from './components/batch.js?v=1';
-import { initSettings } from './components/settings.js?v=1';
-import { initFiles } from './components/files.js?v=1';
-import { initSaveBar } from './components/saveBar.js?v=1';
-import { initAuth } from './components/auth.js?v=1';
-import { t, applyStatic, setUiLang } from './i18n.js?v=1';
+import { $ } from './core/dom.js?v=2';
+import { toast } from './core/ui.js?v=2';
+import { CONFIG } from './config.js?v=2';
+import { local } from './core/storage.js?v=2';
+import { state, emit } from './state.js?v=2';
+import { initTabs } from './components/tabs.js?v=2';
+import { initChat } from './components/chat.js?v=2';
+import { initFaqEditor } from './components/faqEditor.js?v=2';
+import { initMisses } from './components/misses.js?v=2';
+import { initRegistrations } from './components/registrations.js?v=2';
+import { initConversations } from './components/conversations.js?v=2';
+import { initBatch } from './components/batch.js?v=2';
+import { initSettings } from './components/settings.js?v=2';
+import { initFiles } from './components/files.js?v=2';
+import { initSaveBar } from './components/saveBar.js?v=2';
+import { initAuth } from './components/auth.js?v=2';
+import { t, applyStatic, setUiLang } from './i18n.js?v=2';
 
 function initToolbar() {
   const buttons = document.querySelectorAll('[data-site-lang]');
@@ -49,6 +50,7 @@ initChat();
 initFaqEditor();
 initMisses();
 initRegistrations();
+initConversations();
 initBatch();
 initSettings();
 initFiles();

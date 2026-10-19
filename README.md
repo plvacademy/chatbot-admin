@@ -1,8 +1,8 @@
 # PLV Chatbot Admin
 
 Admin panel for the chatbot of PLV — Performance Lab Volleyball Academy.
-The admin edits the bot's questions and answers, reviews questions the bot could not answer, sets the bot's name,
-and tries every change in a test chat before saving. The data lives in a private Google Sheet, reached through a
+The admin edits the bot's questions and answers, reads every conversation visitors had with the bot, reviews
+questions the bot could not answer, sets the bot's name, and tries every change in a test chat before saving. The data lives in a private Google Sheet, reached through a
 Google Apps Script web app.
 
 لوحة تحكم الشات بوت بتاع PLV: تعديل الأسئلة والإجابات، ومراجعة الأسئلة اللي البوت ماعرفش يرد عليها، واسم البوت، وشات تجربة قبل الحفظ.
@@ -23,10 +23,10 @@ js/
   services/api.js       requests to the Apps Script (password, errors)
   services/data.js      load / edit / save actions (no DOM)
   bot/engine.js         the chatbot (also used by the website)
-  bot/site-bot.js       the module the website imports (data loading, registration, unanswered questions)
+  bot/site-bot.js       the module the website imports (data, registration, conversation log)
   bot/texts.js          the bot's sentences, Arabic / English
   bot/runtime.js        the engine built from the current draft
-  components/           login, tabs, test chat, FAQ editor, unanswered questions,
+  components/           login, tabs, test chat, FAQ editor, conversations, unanswered questions,
                         test registrations, batch test, settings, files, save bar
 assets/favicon.png
 ```
@@ -64,4 +64,5 @@ python3 -m http.server 8000
 - The password is kept only for the open tab (sessionStorage) when "remember" is ticked.
 - A Content-Security-Policy allows only this site's own files and requests to the Apps Script.
 - Text from the sheet is always inserted as text, never as HTML.
+- The conversation log never contains phone numbers or the details typed during registration.
 - The page asks search engines not to index it.
