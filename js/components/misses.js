@@ -1,12 +1,12 @@
 /**
  * Questions visitors asked on the website that the bot could not answer (tab ChatMisses in the sheet).
  */
-import { $, h, empty, table, formatDate } from '../core/dom.js?v=5';
-import { toast, busy } from '../core/ui.js?v=5';
-import { state, on, visibleMisses } from '../state.js?v=5';
-import { missToFaq, deleteMiss, clearMisses, loadAll } from '../services/data.js?v=5';
-import { errorText } from '../services/api.js?v=5';
-import { t, locale } from '../i18n.js?v=5';
+import { $, h, empty, table, formatDate } from '../core/dom.js?v=6';
+import { toast, busy } from '../core/ui.js?v=6';
+import { state, on, visibleMisses } from '../state.js?v=6';
+import { missToFaq, deleteMiss, clearMisses, loadAll } from '../services/data.js?v=6';
+import { errorText } from '../services/api.js?v=6';
+import { t, locale } from '../i18n.js?v=6';
 
 const topicLabel = (topic) => { const key = `topic.${topic}`; const v = t(key); return v === key ? topic : v; };
 

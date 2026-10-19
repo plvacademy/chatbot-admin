@@ -1,10 +1,10 @@
 /**
  * Batch test: many questions at once, to check nothing broke after editing the FAQ.
  */
-import { $, h, table } from '../core/dom.js?v=5';
-import { state, on } from '../state.js?v=5';
-import { getEngine } from '../bot/runtime.js?v=5';
-import { t } from '../i18n.js?v=5';
+import { $, h, table } from '../core/dom.js?v=6';
+import { state, on } from '../state.js?v=6';
+import { getEngine } from '../bot/runtime.js?v=6';
+import { t } from '../i18n.js?v=6';
 
 function run() {
   const lines = $('batch-input').value.split('\n').map((s) => s.trim()).filter(Boolean);

@@ -11,23 +11,23 @@
  *   bot/runtime.js       the engine built from the current draft
  *   components/*.js      the parts of the page
  */
-import { $ } from './core/dom.js?v=5';
-import { toast } from './core/ui.js?v=5';
-import { CONFIG } from './config.js?v=5';
-import { local } from './core/storage.js?v=5';
-import { state, emit } from './state.js?v=5';
-import { initTabs } from './components/tabs.js?v=5';
-import { initChat } from './components/chat.js?v=5';
-import { initFaqEditor } from './components/faqEditor.js?v=5';
-import { initMisses } from './components/misses.js?v=5';
-import { initRegistrations } from './components/registrations.js?v=5';
-import { initConversations } from './components/conversations.js?v=5';
-import { initBatch } from './components/batch.js?v=5';
-import { initSettings } from './components/settings.js?v=5';
-import { initFiles } from './components/files.js?v=5';
-import { initSaveBar } from './components/saveBar.js?v=5';
-import { initAuth } from './components/auth.js?v=5';
-import { t, applyStatic, setUiLang } from './i18n.js?v=5';
+import { $ } from './core/dom.js?v=6';
+import { toast } from './core/ui.js?v=6';
+import { CONFIG } from './config.js?v=6';
+import { local } from './core/storage.js?v=6';
+import { state, emit } from './state.js?v=6';
+import { initTabs } from './components/tabs.js?v=6';
+import { initChat } from './components/chat.js?v=6';
+import { initFaqEditor } from './components/faqEditor.js?v=6';
+import { initMisses } from './components/misses.js?v=6';
+import { initRegistrations } from './components/registrations.js?v=6';
+import { initConversations } from './components/conversations.js?v=6';
+import { initBatch } from './components/batch.js?v=6';
+import { initSettings } from './components/settings.js?v=6';
+import { initFiles } from './components/files.js?v=6';
+import { initSaveBar } from './components/saveBar.js?v=6';
+import { initAuth } from './components/auth.js?v=6';
+import { t, applyStatic, setUiLang } from './i18n.js?v=6';
 
 function initToolbar() {
   const buttons = document.querySelectorAll('[data-site-lang]');

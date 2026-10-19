@@ -6,9 +6,9 @@
  *
  * This page is public: messages never name script properties, functions or sheet tabs.
  */
-import { CONFIG } from './config.js?v=5';
-import { local } from './core/storage.js?v=5';
-import { emit } from './state.js?v=5';
+import { CONFIG } from './config.js?v=6';
+import { local } from './core/storage.js?v=6';
+import { emit } from './state.js?v=6';
 
 const DICT = {
   ar: {
@@ -156,7 +156,7 @@ const DICT = {
     'err.conflict': 'الأسئلة اتعدلت من مكان تاني (من الشيت نفسه أو من جهاز تاني) بعد ما فتحت الصفحة. نزّل نسخة من تعديلاتك، وبعدين اعمل تحديث من الشيت.',
     'err.invalid_faq': 'فيه سؤال مش مكتمل',
     'err.invalid_settings': 'الاسم لازم يكون حروف وأرقام بس.',
-    'err.setup_error': 'بيانات الشات بوت لسه مش متجهزة على السكريبت.',
+    'err.setup_error': 'عناوين الصف الأول في تاب في الشيت مش مظبوطة',
     'err.busy': 'السكريبت مشغول. جرّب تاني بعد ثواني.',
     'err.rate_limited': 'طلبات كتير. جرّب تاني بعد شوية.',
     'err.not_set': 'رابط السكريبت مش مظبوط.',
@@ -307,7 +307,7 @@ const DICT = {
     'err.conflict': 'The questions were changed somewhere else (in the sheet itself or on another device) after you opened this page. Download your changes, then reload from the sheet.',
     'err.invalid_faq': 'A question is incomplete',
     'err.invalid_settings': 'The name may only contain letters and numbers.',
-    'err.setup_error': 'The chatbot data is not set up on the server yet.',
+    'err.setup_error': 'The row 1 titles of a sheet tab are not as expected',
     'err.busy': 'The server is busy. Try again in a few seconds.',
     'err.rate_limited': 'Too many requests. Try again later.',
     'err.not_set': 'The server address is not valid.',
