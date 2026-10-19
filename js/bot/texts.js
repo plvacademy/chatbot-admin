@@ -128,6 +128,13 @@ export const TEXTS = {
     'bot.coachOneShort': '{name}{role} is one of our coaches. You can see the full profile on the Coaches page.',
     'bot.reviewsSummary': 'Players and parents rated PLV {average} out of 5, from {count} published reviews ⭐ You can read them, or share your own, on the Feedback page.',
     'bot.chip.private': 'Private training',
+    'bot.chip.compare': 'Why PLV',
+    'bot.chip.level': 'Levels',
+    'bot.chip.ages': 'Ages',
+    'bot.chip.girls': 'Girls teams',
+    'bot.chip.trial': 'Trial session',
+    'bot.chip.gear': 'What to bring',
+    'bot.chip.payment': 'Payment',
   },
   ar: {
     'bot.greet': 'أهلًا بيك! 👋 أنا {name}، مساعد PLV. أقدر أساعدك في إيه النهارده؟||أهلًا وسهلًا في PLV! معاك {name}. تحب تسجل، ولا عندك سؤال؟||منور! 🏐 أنا {name} من PLV. تحب تعرف إيه؟',
@@ -257,6 +264,13 @@ export const TEXTS = {
     'bot.coachOneShort': '{name}{role} من مدربين الأكاديمية. تقدر تشوف البروفايل كامل في صفحة المدربين.',
     'bot.reviewsSummary': 'اللاعيبة وأولياء الأمور قيّموا PLV بـ {average} من 5، من {count} رأي منشور ⭐ تقدر تقراهم، أو تكتب رأيك، في صفحة الآراء.',
     'bot.chip.private': 'تمارين برايفت',
+    'bot.chip.compare': 'ليه PLV',
+    'bot.chip.level': 'المستويات',
+    'bot.chip.ages': 'السن',
+    'bot.chip.girls': 'فرق البنات',
+    'bot.chip.trial': 'حصة تجريبية',
+    'bot.chip.gear': 'أجيب معايا إيه',
+    'bot.chip.payment': 'الدفع',
   },
 };
 

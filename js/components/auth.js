@@ -2,14 +2,14 @@
  * Login / logout. The password is checked by the Apps Script, never by this page.
  * "افتكرني" keeps it in sessionStorage: it is gone when the tab is closed.
  */
-import { $ } from '../core/dom.js?v=8';
-import { banner } from '../core/ui.js?v=8';
-import { CONFIG } from '../config.js?v=8';
-import { session } from '../core/storage.js?v=8';
-import { state, on, setDirty } from '../state.js?v=8';
-import { apiConfig, call, errorText } from '../services/api.js?v=8';
-import { loadAll } from '../services/data.js?v=8';
-import { t } from '../i18n.js?v=8';
+import { $ } from '../core/dom.js?v=9';
+import { banner } from '../core/ui.js?v=9';
+import { CONFIG } from '../config.js?v=9';
+import { session } from '../core/storage.js?v=9';
+import { state, on, setDirty } from '../state.js?v=9';
+import { apiConfig, call, errorText } from '../services/api.js?v=9';
+import { loadAll } from '../services/data.js?v=9';
+import { t } from '../i18n.js?v=9';
 
 function showApp(visible) {
   $('login').hidden = visible;

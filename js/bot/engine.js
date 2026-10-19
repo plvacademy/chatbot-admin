@@ -346,6 +346,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
     : []);
   const link = (lang, labelKey, href) => (href ? [{ type: 'link', label: say(lang, labelKey), href }] : []);
   const chips = (lang, ids) => ids.map((id) => ({ intent: id, label: say(lang, `bot.chip.${id}`) }));
+  const hasChipLabel = (lang, id) => say(lang, `bot.chip.${id}`) !== `bot.chip.${id}`;
   const MENU = ['register', 'areas', 'coaches', 'prices', 'contact'];
   // The four starting buttons (same as the welcome message).
   const START = (lang) => [{ intent: 'reg:start', label: say(lang, 'bot.reg.chatBtn') }, ...chips(lang, ['areas', 'contact', 'about'])];
@@ -756,7 +757,8 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
     // A second clear topic in the same message ("مواعيد وفروع؟") is offered as a button.
     const second = pool.find((c) => c !== best && c.kind === 'topic' && !SMALL.has(c.id) && c.score >= THRESHOLD &&
       !(best.kind === 'topic' && c.id === best.id));
-    if (second && !(out.chips || []).some((c) => c.intent === second.id)) {
+    // (only topics that have a button label: a missing label must never show as raw text)
+    if (second && hasChipLabel(lang, second.id) && !(out.chips || []).some((c) => c.intent === second.id)) {
       out.chips = [{ intent: second.id, label: say(lang, `bot.chip.${second.id}`), second: true }, ...(out.chips || [])].slice(0, 4);
     }
     if (session.reg) {

@@ -2,12 +2,12 @@
  * Conversations: every chat on the website, grouped by conversation id, newest first.
  * The log is loaded the first time this tab is opened (and again with "تحديث"), not at login.
  */
-import { $, h, empty, formatDate } from '../core/dom.js?v=8';
-import { toast, busy } from '../core/ui.js?v=8';
-import { state, on } from '../state.js?v=8';
-import { loadLog } from '../services/data.js?v=8';
-import { errorText } from '../services/api.js?v=8';
-import { t, locale } from '../i18n.js?v=8';
+import { $, h, empty, formatDate } from '../core/dom.js?v=9';
+import { toast, busy } from '../core/ui.js?v=9';
+import { state, on } from '../state.js?v=9';
+import { loadLog } from '../services/data.js?v=9';
+import { errorText } from '../services/api.js?v=9';
+import { t, locale } from '../i18n.js?v=9';
 
 const PAGE_SIZE = 50;
 let shown = PAGE_SIZE;
