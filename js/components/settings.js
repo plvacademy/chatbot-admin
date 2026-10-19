@@ -1,12 +1,12 @@
 /**
  * Bot name (saved separately from the FAQ) and a read-only view of the areas / coaches the bot uses.
  */
-import { $, h } from '../core/dom.js?v=6';
-import { toast, busy } from '../core/ui.js?v=6';
-import { state, on } from '../state.js?v=6';
-import { editSetting, saveSettings } from '../services/data.js?v=6';
-import { errorText } from '../services/api.js?v=6';
-import { t, getUiLang } from '../i18n.js?v=6';
+import { $, h } from '../core/dom.js?v=8';
+import { toast, busy } from '../core/ui.js?v=8';
+import { state, on } from '../state.js?v=8';
+import { editSetting, saveSettings } from '../services/data.js?v=8';
+import { errorText } from '../services/api.js?v=8';
+import { t, getUiLang } from '../i18n.js?v=8';
 
 const NAME_INPUTS = { 's-name-ar': 'botName_ar', 's-name-en': 'botName_en' };
 

@@ -2,12 +2,12 @@
  * FAQ editor: one card per question. Typing updates the draft (and the test bot) without re-rendering,
  * so the cursor never jumps.
  */
-import { $, h, empty } from '../core/dom.js?v=6';
-import { state, on, savedFaqIds } from '../state.js?v=6';
-import { addFaq, removeFaq, editFaq } from '../services/data.js?v=6';
-import { selectTab } from './tabs.js?v=6';
-import { ask } from './chat.js?v=6';
-import { t } from '../i18n.js?v=6';
+import { $, h, empty } from '../core/dom.js?v=8';
+import { state, on, savedFaqIds } from '../state.js?v=8';
+import { addFaq, removeFaq, editFaq } from '../services/data.js?v=8';
+import { selectTab } from './tabs.js?v=8';
+import { ask } from './chat.js?v=8';
+import { t } from '../i18n.js?v=8';
 
 // Each field keeps the direction of its content (Arabic fields stay right-to-left in the English panel too).
 function field(label, row, key, { multiline = false, ltr = false, rtl = false, auto = false, full = false, placeholder = '' } = {}) {

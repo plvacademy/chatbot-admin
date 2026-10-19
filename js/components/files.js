@@ -2,13 +2,13 @@
  * CSV export / import of the FAQ, and import of a backup from the local test screen (JSON).
  * Imported rows are added to the draft; nothing reaches the sheet until "حفظ في الشيت".
  */
-import { $ } from '../core/dom.js?v=6';
-import { toast } from '../core/ui.js?v=6';
-import { toCsv, parseCsv, download, today } from '../core/csv.js?v=6';
-import { CONFIG } from '../config.js?v=6';
-import { state } from '../state.js?v=6';
-import { mergeRows } from '../services/data.js?v=6';
-import { t } from '../i18n.js?v=6';
+import { $ } from '../core/dom.js?v=8';
+import { toast } from '../core/ui.js?v=8';
+import { toCsv, parseCsv, download, today } from '../core/csv.js?v=8';
+import { CONFIG } from '../config.js?v=8';
+import { state } from '../state.js?v=8';
+import { mergeRows } from '../services/data.js?v=8';
+import { t } from '../i18n.js?v=8';
 
 const COLS = CONFIG.FAQ_COLUMNS;
 

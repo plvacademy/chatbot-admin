@@ -4,10 +4,10 @@
  * Requests are POST with Content-Type text/plain: a "simple" request, so the browser sends no CORS preflight
  * (Apps Script cannot answer one). The reply is always JSON: { ok:true, ... } or { ok:false, code, message }.
  */
-import { CONFIG } from '../config.js?v=6';
-import { local } from '../core/storage.js?v=6';
-import { emit } from '../state.js?v=6';
-import { t } from '../i18n.js?v=6';
+import { CONFIG } from '../config.js?v=8';
+import { local } from '../core/storage.js?v=8';
+import { emit } from '../state.js?v=8';
+import { t } from '../i18n.js?v=8';
 
 
 export class ApiError extends Error {

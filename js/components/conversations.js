@@ -2,12 +2,12 @@
  * Conversations: every chat on the website, grouped by conversation id, newest first.
  * The log is loaded the first time this tab is opened (and again with "تحديث"), not at login.
  */
-import { $, h, empty, formatDate } from '../core/dom.js?v=6';
-import { toast, busy } from '../core/ui.js?v=6';
-import { state, on } from '../state.js?v=6';
-import { loadLog, clearLog } from '../services/data.js?v=6';
-import { errorText } from '../services/api.js?v=6';
-import { t, locale } from '../i18n.js?v=6';
+import { $, h, empty, formatDate } from '../core/dom.js?v=8';
+import { toast, busy } from '../core/ui.js?v=8';
+import { state, on } from '../state.js?v=8';
+import { loadLog } from '../services/data.js?v=8';
+import { errorText } from '../services/api.js?v=8';
+import { t, locale } from '../i18n.js?v=8';
 
 const PAGE_SIZE = 50;
 let shown = PAGE_SIZE;
@@ -110,10 +110,6 @@ async function refresh() {
 
 export function initConversations() {
   $('refresh-log').addEventListener('click', refresh);
-  $('clear-log').addEventListener('click', () => {
-    if (!confirm(t('log.confirmClear'))) return;
-    busy($('clear-log'), () => clearLog().then(() => toast(t('log.cleared')), (err) => toast(errorText(err))));
-  });
   $('log-filter').addEventListener('input', () => { shown = PAGE_SIZE; render(); });
   $('log-only-missed').addEventListener('change', () => { shown = PAGE_SIZE; render(); });
   on('tab', (name) => {

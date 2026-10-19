@@ -6,9 +6,9 @@
  *
  * This page is public: messages never name script properties, functions or sheet tabs.
  */
-import { CONFIG } from './config.js?v=6';
-import { local } from './core/storage.js?v=6';
-import { emit } from './state.js?v=6';
+import { CONFIG } from './config.js?v=8';
+import { local } from './core/storage.js?v=8';
+import { emit } from './state.js?v=8';
 
 const DICT = {
   ar: {
@@ -56,9 +56,6 @@ const DICT = {
     'log.refresh': 'تحديث',
     'log.onlyMissed': 'اللي فيها أسئلة ماتجاوبتش بس',
     'log.search': 'بحث في المحادثات…',
-    'log.clear': 'مسح السجل كله',
-    'log.confirmClear': 'مسح كل المحادثات من الشيت؟ مينفعش ترجع.',
-    'log.cleared': 'السجل اتمسح',
     'log.loading': 'بيحمّل المحادثات…',
     'log.empty': 'لسه مفيش محادثات. أول ما حد يكلم البوت على الموقع هتظهر هنا.',
     'log.noMatch': 'مفيش محادثات بالبحث ده.',
@@ -207,9 +204,6 @@ const DICT = {
     'log.refresh': 'Refresh',
     'log.onlyMissed': 'Only with unanswered questions',
     'log.search': 'Search conversations…',
-    'log.clear': 'Clear the whole log',
-    'log.confirmClear': 'Delete every conversation from the sheet? This cannot be undone.',
-    'log.cleared': 'Log cleared',
     'log.loading': 'Loading conversations…',
     'log.empty': 'No conversations yet. They appear here as soon as someone talks to the bot on the website.',
     'log.noMatch': 'No conversation matches.',
