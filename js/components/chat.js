@@ -2,11 +2,11 @@
  * Test chat: the real bot on the current draft. It never sends registrations or questions to the sheet:
  * a registration is kept in the "تسجيلات تجريبية" tab instead.
  */
-import { $, h } from '../core/dom.js?v=3';
-import { CONFIG } from '../config.js?v=3';
-import { state, on, emit, botName } from '../state.js?v=3';
-import { getEngine, tr } from '../bot/runtime.js?v=3';
-import { t } from '../i18n.js?v=3';
+import { $, h } from '../core/dom.js?v=4';
+import { CONFIG } from '../config.js?v=4';
+import { state, on, emit, botName } from '../state.js?v=4';
+import { getEngine, tr } from '../bot/runtime.js?v=4';
+import { t } from '../i18n.js?v=4';
 
 const log = () => $('msgs');
 const dirOf = (lang) => (lang === 'ar' ? 'rtl' : 'ltr');

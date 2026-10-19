@@ -2,9 +2,9 @@
  * Data actions: load from the sheet, edit the draft, save. They update `state` and emit events;
  * they never touch the DOM (components do).
  */
-import { CONFIG } from '../config.js?v=3';
-import { call } from './api.js?v=3';
-import { state, emit, setDirty, clone } from '../state.js?v=3';
+import { CONFIG } from '../config.js?v=4';
+import { call } from './api.js?v=4';
+import { state, emit, setDirty, clone } from '../state.js?v=4';
 
 const ID_RE = /^[A-Za-z0-9_-]{1,20}$/;
 const hasText = (v) => String(v ?? '').trim() !== '';

@@ -25,8 +25,8 @@
  * without messages or by reset(). Phone numbers and the name / phone typed during registration are never logged.
  * Nothing here needs a secret.
  */
-import { createEngine } from './engine.js?v=3';
-import { tr } from './texts.js?v=3';
+import { createEngine } from './engine.js?v=4';
+import { tr } from './texts.js?v=4';
 
 const TIMEOUT_MS = 10000;
 const START_CHIPS = ['areas', 'contact', 'about'];

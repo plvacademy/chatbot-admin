@@ -1,7 +1,7 @@
 /**
  * Accessible tabs (WAI-ARIA pattern): click, or arrow keys / Home / End when a tab has focus.
  */
-import { emit } from '../state.js?v=3';
+import { emit } from '../state.js?v=4';
 
 const tabs = () => [...document.querySelectorAll('[role="tab"]')];
 

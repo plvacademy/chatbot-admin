@@ -351,13 +351,13 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
   const START = (lang) => [{ intent: 'reg:start', label: say(lang, 'bot.reg.chatBtn') }, ...chips(lang, ['areas', 'contact', 'about'])];
 
   const answers = {
-    greet: (lang) => ({ text: say(lang, 'bot.greet'), chips: chips(lang, MENU) }),
+    greet: (lang) => ({ text: say(lang, 'bot.greet'), chips: START(lang) }),
     help: (lang) => ({ text: say(lang, 'bot.help'), chips: START(lang) }),
     confused: (lang) => ({ text: say(lang, 'bot.confused'), chips: START(lang) }),
     more: (lang) => ({ text: say(lang, 'bot.more'), chips: START(lang) }),
     yes: (lang) => ({ text: say(lang, 'bot.yes'), chips: START(lang) }),
     no: (lang) => ({ text: say(lang, 'bot.no') }),
-    howareyou: (lang) => ({ text: say(lang, 'bot.howareyou'), chips: chips(lang, MENU) }),
+    howareyou: (lang) => ({ text: say(lang, 'bot.howareyou'), chips: START(lang) }),
     ack: (lang) => ({ text: say(lang, 'bot.ack'), chips: chips(lang, MENU) }),
     who: (lang) => ({ text: say(lang, 'bot.who'), chips: chips(lang, MENU) }),
     private: (lang, q, ctx = {}) => ({
@@ -735,7 +735,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
         lang: fbLang, intent: 'fallback', miss: true,
         text: say(fbLang, links.whatsappNumber ? 'bot.unknown' : 'bot.unknownNoWa'),
         actions: wa(fbLang, message),
-        chips: chips(fbLang, MENU),
+        chips: START(fbLang),
         debug,
       };
     }
@@ -757,7 +757,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
     const second = pool.find((c) => c !== best && c.kind === 'topic' && !SMALL.has(c.id) && c.score >= THRESHOLD &&
       !(best.kind === 'topic' && c.id === best.id));
     if (second && !(out.chips || []).some((c) => c.intent === second.id)) {
-      out.chips = [{ intent: second.id, label: say(lang, `bot.chip.${second.id}`) }, ...(out.chips || [])].slice(0, 4);
+      out.chips = [{ intent: second.id, label: say(lang, `bot.chip.${second.id}`), second: true }, ...(out.chips || [])].slice(0, 4);
     }
     if (session.reg) {
       const p = regPrompt(session.reg, say(lang, 'bot.reg.resume'));
@@ -774,6 +774,20 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
   /* ---------------- keep the conversation going ---------------- */
   const OFFER_REG = /^(faq:|prices|private|areas|about|compare|coaches|level|ages|girls|trial|gear|payment|vb_positions|vb_benefits)/;
   const INFO = /^(faq:|prices|private|areas|about|compare|coaches|gallery|reviews|contact|social|level|ages|girls|trial|gear|payment|vb_|st_generic)/;
+  // Buttons that make sense after each kind of answer. The topic just answered, and topics already answered in this
+  // conversation, are never offered again; at most 3 buttons.
+  const NEXT = {
+    areas: ['reg:start', 'prices'], prices: ['reg:start', 'areas'], private: ['reg:start', 'areas'],
+    coaches: ['reg:start', 'about'], about: ['reg:start', 'coaches', 'areas'], compare: ['reg:start', 'coaches'],
+    gallery: ['reg:start', 'about'], reviews: ['reg:start', 'about'], contact: [], social: [],
+    level: ['reg:start'], ages: ['reg:start'], girls: ['reg:start'], trial: ['reg:start'], gear: ['reg:start'], payment: ['reg:start'],
+    faq: ['reg:start'], st_generic: ['reg:start', 'about'], vb_positions: ['reg:start'], vb_benefits: ['reg:start'],
+  };
+  // Answers that list what the bot can do keep all their buttons.
+  const SHOW_ALL = new Set(['menu', 'help', 'confused', 'more', 'yes', 'fallback']);
+  const chipFor = (lang, id) => (id === 'reg:start' || id === 'register'
+    ? { intent: 'reg:start', label: say(lang, 'bot.reg.chatBtn') }
+    : { intent: id, label: say(lang, `bot.chip.${id}`) });
 
   function finish(out, session, message) {
     const lang = out.lang;
@@ -788,14 +802,27 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
       // Offer registration after useful answers, but not twice in a row if the visitor ignored it.
       offer = OFFER_REG.test(out.intent) && session.offer !== 'reg' ? 'reg' : 'more';
       out.text = `${out.text}\n\n${say(lang, offer === 'reg' ? 'bot.follow.reg' : 'bot.follow.more')}`;
-      // Buttons: what the answer suggested first, then the four start buttons; the old "Register" (info) button becomes
-      // "Register here in the chat", and nothing appears twice.
-      const seen = new Set();
-      out.chips = [...(out.chips || []), ...START(lang)]
-        .map((c) => (c.intent === 'register' ? { intent: 'reg:start', label: say(lang, 'bot.reg.chatBtn') } : c))
-        .filter((c) => (seen.has(c.intent) ? false : seen.add(c.intent)))
-        .slice(0, 4);
     }
+    const intent = out.intent || '';
+    const base = intent.startsWith('faq:') ? 'faq' : intent;
+    if (!session.reg && !intent.startsWith('reg:')) {
+      const seenTopics = new Set(session.seen || []);
+      // A second topic the visitor asked about in the same message comes first; then the next steps for this answer.
+      const wanted = INFO.test(intent)
+        ? [...(out.chips || []).filter((c) => c.second).map((c) => c.intent), ...(NEXT[base] || ['reg:start'])]
+        : (out.chips || []).map((c) => c.intent);
+      const ids = [];
+      for (const raw of wanted) {
+        const id = raw === 'register' ? 'reg:start' : raw;
+        if (!id || id === base || ids.includes(id)) continue;
+        if (id !== 'reg:start' && !SHOW_ALL.has(base) && seenTopics.has(id)) continue;
+        ids.push(id);
+      }
+      out.chips = ids.slice(0, SHOW_ALL.has(base) ? 5 : 3).map((id) => chipFor(lang, id));
+      // "Register here in the chat" makes the separate "Register now" (form page) button redundant.
+      if (ids.includes('reg:start') && links.register) out.actions = (out.actions || []).filter((a) => a.href !== links.register);
+    }
+    if (INFO.test(intent) || base === 'register') session.seen = [...new Set([...(session.seen || []), base])];
     if (out.needsFaq) { out.miss = true; delete out.needsFaq; }
 
     session.offer = offer;

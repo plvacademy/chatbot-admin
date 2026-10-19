@@ -1,9 +1,9 @@
 /**
  * Registrations made in the test chat. Kept in memory only: nothing is ever sent.
  */
-import { $, h, empty, table, formatDate } from '../core/dom.js?v=3';
-import { state, on } from '../state.js?v=3';
-import { t, locale, getUiLang } from '../i18n.js?v=3';
+import { $, h, empty, table, formatDate } from '../core/dom.js?v=4';
+import { state, on } from '../state.js?v=4';
+import { t, locale, getUiLang } from '../i18n.js?v=4';
 
 
 function render() {
