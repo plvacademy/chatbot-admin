@@ -2,14 +2,14 @@
  * Login / logout. The password is checked by the Apps Script, never by this page.
  * "افتكرني" keeps it in sessionStorage: it is gone when the tab is closed.
  */
-import { $ } from '../core/dom.js?v=4';
-import { banner } from '../core/ui.js?v=4';
-import { CONFIG } from '../config.js?v=4';
-import { session } from '../core/storage.js?v=4';
-import { state, on, setDirty } from '../state.js?v=4';
-import { apiConfig, call, errorText } from '../services/api.js?v=4';
-import { loadAll } from '../services/data.js?v=4';
-import { t } from '../i18n.js?v=4';
+import { $ } from '../core/dom.js?v=5';
+import { banner } from '../core/ui.js?v=5';
+import { CONFIG } from '../config.js?v=5';
+import { session } from '../core/storage.js?v=5';
+import { state, on, setDirty } from '../state.js?v=5';
+import { apiConfig, call, errorText } from '../services/api.js?v=5';
+import { loadAll } from '../services/data.js?v=5';
+import { t } from '../i18n.js?v=5';
 
 function showApp(visible) {
   $('login').hidden = visible;
@@ -40,7 +40,7 @@ async function login(password, remember) {
     await reload();
   } catch (err) {
     apiConfig.clearPassword();
-    session.remove(CONFIG.STORAGE.password);
+    if (err.code === 'unauthorized' || err.code === 'locked') session.remove(CONFIG.STORAGE.password);
     $('login-err').textContent = errorText(err);
     $('pw').focus();
   } finally {
@@ -80,6 +80,15 @@ export function initAuth() {
   // The password stopped working (changed in the script, or locked after wrong attempts).
   on('auth:expired', (err) => { if (!$('app').hidden) logout(errorText(err)); });
 
+  // Page reloaded with a remembered password: open the panel straight away. Loading the data checks the
+  // password anyway (a wrong one logs out through 'auth:expired'); a network error keeps the password and
+  // shows "retry", so a slow or failed request never sends the admin back to the login screen.
   const remembered = session.get(CONFIG.STORAGE.password);
-  if (remembered) login(remembered, true); else $('pw').focus();
+  if (remembered) {
+    apiConfig.setPassword(remembered);
+    showApp(true);
+    reload();
+  } else {
+    $('pw').focus();
+  }
 }
