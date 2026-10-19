@@ -2,11 +2,11 @@
  * Test chat: the real bot on the current draft. It never sends registrations or questions to the sheet:
  * a registration is kept in the "تسجيلات تجريبية" tab instead.
  */
-import { $, h } from '../core/dom.js?v=2';
-import { CONFIG } from '../config.js?v=2';
-import { state, on, emit, botName } from '../state.js?v=2';
-import { getEngine, tr } from '../bot/runtime.js?v=2';
-import { t } from '../i18n.js?v=2';
+import { $, h } from '../core/dom.js?v=3';
+import { CONFIG } from '../config.js?v=3';
+import { state, on, emit, botName } from '../state.js?v=3';
+import { getEngine, tr } from '../bot/runtime.js?v=3';
+import { t } from '../i18n.js?v=3';
 
 const log = () => $('msgs');
 const dirOf = (lang) => (lang === 'ar' ? 'rtl' : 'ltr');
@@ -115,8 +115,7 @@ export function welcome() {
 
 function applyLang() {
   const ar = state.siteLang === 'ar';
-  const name = botName(state.siteLang);
-  $('chat-title').textContent = name ? `${name} · PLV` : (ar ? 'مساعد PLV' : 'PLV Assistant');
+  $('chat-title').textContent = ar ? 'مساعد PLV' : 'PLV Assistant'; // same header as the website; the name is used in the messages
   $('input').placeholder = ar ? 'اكتب رسالتك…' : 'Type your message…';
   $('send').textContent = ar ? 'إرسال' : 'Send';
   $('reset-chat').textContent = ar ? 'محادثة جديدة' : 'New chat';

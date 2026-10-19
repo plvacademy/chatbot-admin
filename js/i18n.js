@@ -6,9 +6,9 @@
  *
  * This page is public: messages never name script properties, functions or sheet tabs.
  */
-import { CONFIG } from './config.js?v=2';
-import { local } from './core/storage.js?v=2';
-import { emit } from './state.js?v=2';
+import { CONFIG } from './config.js?v=3';
+import { local } from './core/storage.js?v=3';
+import { emit } from './state.js?v=3';
 
 const DICT = {
   ar: {
@@ -133,7 +133,7 @@ const DICT = {
     'set.dataNote': 'البوت بياخد المناطق والمدربين من نفس بيانات الموقع. لو عايز تغيّرهم، عدّلهم في الشيت ودوس "تحديث من الشيت".',
     'set.areas': 'المناطق',
     'set.coaches': 'المدربين',
-    'set.noAreas': 'مفيش مناطق منشورة',
+    'set.noAreas': 'البوت مش لاقي أي منطقة. لو المناطق ظاهرة على الموقع، يبقى السكريبت محتاج يعرف مكان شيت الموقع (شوف خطوات التركيب).',
     'set.noCoaches': 'مفيش مدربين منشورين',
     'set.filesTitle': 'ملفات',
     'set.filesHint': 'ملف CSV أعمدته نفس أعمدة الأسئلة في الشيت. ممكن تنزّل نسخة احتياطي، أو ترفع أسئلة كتير مرة واحدة (بتتضاف للتعديلات، وبعدها دوس "حفظ في الشيت").',
@@ -284,7 +284,7 @@ const DICT = {
     'set.dataNote': 'The bot takes the areas and coaches from the same data as the website. To change them, edit the sheet and press "Reload from sheet".',
     'set.areas': 'Areas',
     'set.coaches': 'Coaches',
-    'set.noAreas': 'No published areas',
+    'set.noAreas': 'The bot finds no area. If the website shows areas, the script needs to know where the website sheet is (see the setup steps).',
     'set.noCoaches': 'No published coaches',
     'set.filesTitle': 'Files',
     'set.filesHint': 'A CSV file with the same columns as the questions in the sheet. Download a backup, or upload many questions at once (they are added to your changes; then press "Save to sheet").',

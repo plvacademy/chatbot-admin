@@ -1,7 +1,7 @@
 /**
  * Feedback to the admin: a short toast, and a banner for results that need attention (with an optional button).
  */
-import { $, h } from './dom.js?v=2';
+import { $, h } from './dom.js?v=3';
 
 let toastTimer;
 export function toast(message) {

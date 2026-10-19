@@ -12,8 +12,8 @@
  *   lang         the site language of the test chat changed
  *   auth:expired the password stopped working (wrong / locked): back to the login screen
  */
-import { CONFIG } from './config.js?v=2';
-import { local } from './core/storage.js?v=2';
+import { CONFIG } from './config.js?v=3';
+import { local } from './core/storage.js?v=3';
 
 export const state = {
   // As last read from / saved to the sheet.

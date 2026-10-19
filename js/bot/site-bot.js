@@ -7,7 +7,8 @@
  *   bot.welcome(lang)                // -> Reply
  *   await bot.reply(text, lang)      // -> Reply      (visitor typed something)
  *   await bot.choose(chip, lang)     // -> Reply      (visitor pressed one of reply.chips)
- *   bot.botName(lang)                // name or ''
+ *   bot.botName(lang)                // always '': the chat header keeps the website's own title ("PLV Assistant");
+ *                                    // the bot's name is only used inside its messages
  *   bot.reset()                      // new conversation
  *
  * Reply = {
@@ -24,8 +25,8 @@
  * without messages or by reset(). Phone numbers and the name / phone typed during registration are never logged.
  * Nothing here needs a secret.
  */
-import { createEngine } from './engine.js?v=2';
-import { tr } from './texts.js?v=2';
+import { createEngine } from './engine.js?v=3';
+import { tr } from './texts.js?v=3';
 
 const TIMEOUT_MS = 10000;
 const START_CHIPS = ['areas', 'contact', 'about'];
@@ -187,7 +188,8 @@ export function createSiteBot(options = {}) {
 
   return {
     ready,
-    botName,
+    // The owner wants the header to stay "PLV Assistant": the name (from the sheet) appears only in the messages.
+    botName: () => '',
 
     welcome(lang = 'ar') {
       session = {};
