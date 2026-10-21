@@ -1,15 +1,15 @@
 /**
  * The "unsaved changes" bar: save (Ctrl/Cmd + S works too), discard, and warning before leaving the page.
  */
-import { $ } from '../core/dom.js?v=9';
-import { banner, busy } from '../core/ui.js?v=9';
-import { state, on } from '../state.js?v=9';
-import { validateDraft, saveFaq, discardDraft } from '../services/data.js?v=9';
-import { errorText } from '../services/api.js?v=9';
-import { renderFaq, cardFor } from './faqEditor.js?v=9';
-import { selectTab } from './tabs.js?v=9';
-import { exportCsv } from './files.js?v=9';
-import { t } from '../i18n.js?v=9';
+import { $ } from '../core/dom.js?v=10';
+import { banner, busy } from '../core/ui.js?v=10';
+import { state, on } from '../state.js?v=10';
+import { validateDraft, saveFaq, discardDraft } from '../services/data.js?v=10';
+import { errorText } from '../services/api.js?v=10';
+import { renderFaq, cardFor } from './faqEditor.js?v=10';
+import { selectTab } from './tabs.js?v=10';
+import { exportCsv } from './files.js?v=10';
+import { t } from '../i18n.js?v=10';
 
 async function save() {
   const bad = validateDraft();

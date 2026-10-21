@@ -6,9 +6,9 @@
  *
  * This page is public: messages never name script properties, functions or sheet tabs.
  */
-import { CONFIG } from './config.js?v=9';
-import { local } from './core/storage.js?v=9';
-import { emit } from './state.js?v=9';
+import { CONFIG } from './config.js?v=10';
+import { local } from './core/storage.js?v=10';
+import { emit } from './state.js?v=10';
 
 const DICT = {
   ar: {

@@ -645,7 +645,7 @@ export function createEngine({ faq = [], areas = [], coaches = [], reviews = nul
   /** The page reports how the real submission went (see `submit` above). */
   function submitResult(ok, lang, code) {
     if (ok) return { lang, intent: 'reg:done', text: say(lang, 'bot.reg.done'), chips: chips(lang, ['prices', 'contact']) };
-    return { lang, intent: 'reg:failed', text: say(lang, code === 'invalid_area' ? 'bot.reg.failArea' : 'bot.reg.fail'), actions: wa(lang) };
+    return { lang, intent: 'reg:failed', text: say(lang, code === 'invalid_area' ? 'bot.reg.failArea' : code === 'rate_limited' ? 'bot.reg.failLimit' : 'bot.reg.fail'), actions: wa(lang) };
   }
 
   /** Answer for a quick-reply button (no matching needed). */
