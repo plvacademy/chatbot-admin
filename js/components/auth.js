@@ -1,15 +1,15 @@
 /**
  * Login / logout. The password is checked by the Apps Script, never by this page.
- * "افتكرني" keeps it in sessionStorage: it is gone when the tab is closed.
+ * The password is kept in memory only (security review, 2026-10-21): a page refresh asks for it again.
  */
-import { $ } from '../core/dom.js?v=10';
-import { banner } from '../core/ui.js?v=10';
-import { CONFIG } from '../config.js?v=10';
-import { session } from '../core/storage.js?v=10';
-import { state, on, setDirty } from '../state.js?v=10';
-import { apiConfig, call, errorText } from '../services/api.js?v=10';
-import { loadAll } from '../services/data.js?v=10';
-import { t } from '../i18n.js?v=10';
+import { $ } from '../core/dom.js?v=11';
+import { banner } from '../core/ui.js?v=11';
+import { CONFIG } from '../config.js?v=11';
+import { session } from '../core/storage.js?v=11';
+import { state, on, setDirty } from '../state.js?v=11';
+import { apiConfig, call, errorText } from '../services/api.js?v=11';
+import { loadAll } from '../services/data.js?v=11';
+import { t } from '../i18n.js?v=11';
 
 function showApp(visible) {
   $('login').hidden = visible;
@@ -35,7 +35,7 @@ async function login(password, remember) {
   $('login-err').textContent = '';
   try {
     await call('login');
-    if (remember) session.set(CONFIG.STORAGE.password, password); else session.remove(CONFIG.STORAGE.password);
+    session.remove(CONFIG.STORAGE.password); // older versions kept it here: never again
     showApp(true);
     await reload();
   } catch (err) {
@@ -80,15 +80,7 @@ export function initAuth() {
   // The password stopped working (changed in the script, or locked after wrong attempts).
   on('auth:expired', (err) => { if (!$('app').hidden) logout(errorText(err)); });
 
-  // Page reloaded with a remembered password: open the panel straight away. Loading the data checks the
-  // password anyway (a wrong one logs out through 'auth:expired'); a network error keeps the password and
-  // shows "retry", so a slow or failed request never sends the admin back to the login screen.
-  const remembered = session.get(CONFIG.STORAGE.password);
-  if (remembered) {
-    apiConfig.setPassword(remembered);
-    showApp(true);
-    reload();
-  } else {
-    $('pw').focus();
-  }
+  // Older versions remembered the password in sessionStorage: remove it; the password lives in memory only now.
+  session.remove(CONFIG.STORAGE.password);
+  $('pw').focus();
 }

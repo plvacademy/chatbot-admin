@@ -2,10 +2,10 @@
  * Keeps one chatbot engine built from the current draft (so edits can be tried before saving).
  * engine.js / texts.js are the same files the website uses.
  */
-import { createEngine } from './engine.js?v=10';
-import { tr } from './texts.js?v=10';
-import { CONFIG } from '../config.js?v=10';
-import { state, on } from '../state.js?v=10';
+import { createEngine } from './engine.js?v=11';
+import { tr } from './texts.js?v=11';
+import { CONFIG } from '../config.js?v=11';
+import { state, on } from '../state.js?v=11';
 
 let engine = null;
 let timer;

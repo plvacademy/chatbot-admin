@@ -11,23 +11,23 @@
  *   bot/runtime.js       the engine built from the current draft
  *   components/*.js      the parts of the page
  */
-import { $ } from './core/dom.js?v=10';
-import { toast } from './core/ui.js?v=10';
-import { CONFIG } from './config.js?v=10';
-import { local } from './core/storage.js?v=10';
-import { state, emit } from './state.js?v=10';
-import { initTabs } from './components/tabs.js?v=10';
-import { initChat } from './components/chat.js?v=10';
-import { initFaqEditor } from './components/faqEditor.js?v=10';
-import { initMisses } from './components/misses.js?v=10';
-import { initRegistrations } from './components/registrations.js?v=10';
-import { initConversations } from './components/conversations.js?v=10';
-import { initBatch } from './components/batch.js?v=10';
-import { initSettings } from './components/settings.js?v=10';
-import { initFiles } from './components/files.js?v=10';
-import { initSaveBar } from './components/saveBar.js?v=10';
-import { initAuth } from './components/auth.js?v=10';
-import { t, applyStatic, setUiLang } from './i18n.js?v=10';
+import { $ } from './core/dom.js?v=11';
+import { toast } from './core/ui.js?v=11';
+import { CONFIG } from './config.js?v=11';
+import { local } from './core/storage.js?v=11';
+import { state, emit } from './state.js?v=11';
+import { initTabs } from './components/tabs.js?v=11';
+import { initChat } from './components/chat.js?v=11';
+import { initFaqEditor } from './components/faqEditor.js?v=11';
+import { initMisses } from './components/misses.js?v=11';
+import { initRegistrations } from './components/registrations.js?v=11';
+import { initConversations } from './components/conversations.js?v=11';
+import { initBatch } from './components/batch.js?v=11';
+import { initSettings } from './components/settings.js?v=11';
+import { initFiles } from './components/files.js?v=11';
+import { initSaveBar } from './components/saveBar.js?v=11';
+import { initAuth } from './components/auth.js?v=11';
+import { t, applyStatic, setUiLang } from './i18n.js?v=11';
 
 function initToolbar() {
   const buttons = document.querySelectorAll('[data-site-lang]');
